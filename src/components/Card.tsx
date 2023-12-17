@@ -12,13 +12,15 @@ export default async function Card(props: { name: string }) {
     <div className="h-[250px] w-[200px] bg-[#24242454]  rounded hover:scale-110 transition-transform">
       <div className="flex justify-center">
         <Image
-          src={pokemon.sprites.other["official-artwork"].front_default}
+          src={
+            pokemon.sprites.other["official-artwork"]?.front_default ||
+            pokemon.sprites.front_default ||
+            ""
+          }
           alt={pokemon.name}
           width={100}
           height={100}
           className="z-10"
-          placeholder="blur"
-          blurDataURL={pokemon.sprites.front_default}
         />
         <svg width="150px" height="100px" className="absolute z-0">
           <linearGradient

@@ -20,19 +20,20 @@ export default async function Home({
   searchParams: {
     offset: number | undefined;
     limit: number | undefined;
-    page: number | undefined;
   };
 }) {
-  const { offset, limit, page = 1 } = searchParams;
+  const { offset, limit } = searchParams;
 
-  console.log(offset, limit);
   const pokemons = await getData(offset, limit);
+  const page = Number(offset) / PER_PAGE + 1;
+  const totalPages = Math.ceil(pokemons.count / PER_PAGE);
+
   return (
     <main className="flex flex-col min-h-screen items-center gap-4 px-24 pt-14 backdrop-blur-lg bg-cyan-600">
       <div className="flex  justify-around bg-[#2a2b2cd2] absolute top-0 left-0 w-[500px] rounded-ee-lg h-[70px]">
         <p className="font-bold text-lg">
-          Boxes: {Math.ceil(pokemons.count / pokemons.results.length)}
-          Box:{page}
+          Boxes: {totalPages}
+          Box: {page}
         </p>
         <input
           className="w-1/2 h-10 rounded-md bg-[#2a2b2c69] hover:bg-[#2a2b2cd2] transition-colors"
@@ -48,7 +49,6 @@ export default async function Home({
               query: {
                 offset: offset && +offset > 0 ? +offset - PER_PAGE : 0,
                 limit: limit || PER_PAGE,
-                page: page && +page > 0 ? +page - 1 : 1,
               },
             }}
             passHref
@@ -67,12 +67,14 @@ export default async function Home({
               query: {
                 offset: offset ? +offset + PER_PAGE : PER_PAGE,
                 limit: limit || PER_PAGE,
-                page: page ? +page + 1 : 1,
               },
             }}
             passHref
           >
-            <button className="bg-[#00000065] rounded-md p-1 disabled:opacity-50 disabled:cursor-not-allowed transition-colors hover:bg-[#000000a6]">
+            <button
+              className="bg-[#00000065] rounded-md p-1 disabled:opacity-50 disabled:cursor-not-allowed transition-colors hover:bg-[#000000a6]"
+              disabled={totalPages == page}
+            >
               Next
             </button>
           </Link>
