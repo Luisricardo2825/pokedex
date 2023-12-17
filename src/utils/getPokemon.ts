@@ -1,9 +1,12 @@
 import { Pokemon } from "@/@types/pokemon";
 
-const pokemons = new Map<string, any>();
-export default async function getPokemon(idOrName: number | string) {
-  let pokemon = findPokemon(idOrName);
+export default async function getPokemon(
+  idOrName: number | string,
+  pokemons = new Map()
+) {
+  let pokemon = findPokemon(idOrName, pokemons);
   if (pokemon) {
+    console.log("Found");
     return pokemon;
   }
 
@@ -14,7 +17,10 @@ export default async function getPokemon(idOrName: number | string) {
   return pokemon;
 }
 
-function findPokemon(param: string | number): Pokemon | null {
+function findPokemon(
+  param: string | number,
+  pokemons: Map<string, any>
+): Pokemon | null {
   if (pokemons.has(String(param))) {
     return pokemons.get(String(param));
   }

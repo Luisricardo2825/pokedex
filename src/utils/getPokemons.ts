@@ -8,7 +8,7 @@ export default function getPokemons(offset: number, limit: number) {
     });
 }
 
-interface PokemonList {
+export interface PokemonList {
   count: number;
   next: string;
   previous: any;
