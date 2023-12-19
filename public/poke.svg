@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 394 80">
+    <linearGradient id="poke-gradient" x1="100%" y1="100%" x2="0%" y2="0%">
+        <stop stop-color="#ffffff" offset="50%"></stop>
+        <stop stop-color="#f14f4f" offset="50%"></stop>
+    </linearGradient>
+    <svg xmlns="http://www.w3.org/2000/svg" width="150" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tabler-icon tabler-icon-pokeball" style="stroke: url(&quot;#poke-gradient&quot;);">
+        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+        <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+        <path d="M3 12h6"></path>
+        <path d="M15 12h6"></path>
+    </svg>
+</svg>

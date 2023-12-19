@@ -4,14 +4,27 @@ import captalize from "@/utils/captalize";
 import getPokemon from "@/utils/getPokemon";
 import Image from "next/image";
 import React, { useState } from "react";
-import { IconPokeball } from "@tabler/icons-react";
 import { Pokemon } from "@/@types/pokemon";
 import { useAtom } from "jotai";
 import { pokemonsAtom } from "@/constants/atom";
+import PokeBallIcon from "./PokeBallIcon";
+import Tilt from "react-parallax-tilt";
+import { TiltOptions } from "vanilla-tilt";
+
+const options: TiltOptions = {
+  scale: 1.1,
+  speed: 1000,
+  max: 10,
+  reset: true,
+  glare: true, // if it should have a "glare" effect
+  "max-glare": 0.5, // the maximum "glare" opacity (1 = 100%, 0.5 = 50%)
+  "glare-prerender": false, // false = VanillaTilt creates the glare elements for you, otherwise
+  transition: true,
+};
 
 export default function Card(props: { name: string }) {
   const [pokemons, setPokemons] = useAtom(pokemonsAtom);
-  const [pokemon, setPokemon] = useState<Pokemon>();
+  const [pokemon, setPokemon] = useState<Partial<Pokemon>>();
   React.useEffect(() => {
     const pokemon = pokemons.get(props.name);
     if (pokemon) {
@@ -22,7 +35,14 @@ export default function Card(props: { name: string }) {
     getPokemon(props.name).then((pokemon) => {
       setPokemon(pokemon);
       setPokemons((prev) => {
-        prev.set(pokemon.name, pokemon);
+        prev.set(pokemon.name, {
+          sprites: pokemon.sprites,
+          types: pokemon.types,
+          name: pokemon.name,
+          id: pokemon.id,
+          height: pokemon.height,
+          weight: pokemon.weight,
+        });
         return prev;
       });
     });
@@ -52,45 +72,50 @@ export default function Card(props: { name: string }) {
       </div>
     );
   return (
-    <div className="h-[250px] w-[200px] bg-[#24242454]  rounded hover:scale-110 transition-transform">
-      <div className="flex justify-center">
-        <Image
-          src={
-            pokemon.sprites.other["official-artwork"]?.front_default ||
-            pokemon.sprites.front_default ||
-            ""
-          }
-          alt={pokemon.name}
-          width={100}
-          height={100}
-          className="z-10"
-          priority
-        />
-        <svg width="150px" height="100px" className="absolute z-0">
-          <linearGradient
-            id="blue-gradient"
-            x1="100%"
-            y1="100%"
-            x2="0%"
-            y2="0%"
-          >
-            <stop stopColor="#ffffff" offset="50%" />
-            <stop stopColor="#f14f4f" offset="50%" />
-          </linearGradient>
-          <IconPokeball
-            width={150}
-            height={100}
-            style={{ stroke: "url(#blue-gradient)" }}
-          />
-        </svg>
+    <Tilt
+      className="card glassmorphic transition-transform p-5 parallax-effect-img hover:z-50"
+      tiltMaxAngleX={40}
+      tiltMaxAngleY={40}
+      perspective={800}
+      transitionSpeed={1500}
+      scale={1.1}
+      glareReverse
+      glareEnable={true}
+      glareMaxOpacity={0.8}
+      glareColor="#ffffff"
+      glarePosition="all"
+      glareBorderRadius="20px"
+    >
+      <div
+        className={`ribbon relative w-fit rounded-e-lg top-2 pl-1 pr-2 bg-gradient-to-r from-[#df585880] to-[#f51111ad] text-[#ffffffc7]`}
+      >
+        #{pokemon.id}
       </div>
 
-      <p className="text-white text-center">{captalize(pokemon.name)}</p>
-      <p className="text-white text-center">{pokemon.id}</p>
-      <p className="text-white text-center">{pokemon.height}</p>
-      <p className="text-white text-center">{pokemon.weight}</p>
+      <div className="flex justify-center p-1">
+        <Image
+          src={
+            pokemon?.sprites?.other["official-artwork"]?.front_default ||
+            pokemon?.sprites?.front_default ||
+            ""
+          }
+          alt={pokemon?.name || "unknow pokemon"}
+          width={100}
+          height={100}
+          className="z-10 inner-element"
+          priority
+        />
+        <PokeBallIcon />
+      </div>
+
+      <p className="text-white text-center">
+        {captalize(pokemon?.name || "Unknow")}
+      </p>
+
+      <p className="text-white">{pokemon.height}</p>
+      <p className="text-white">{pokemon.weight}</p>
       <div className="flex justify-around">
-        {pokemon.types.map((type) => (
+        {pokemon?.types?.map((type) => (
           <p
             className={`text-white text-center rounded-lg max-w-min px-5`}
             style={{
@@ -102,6 +127,6 @@ export default function Card(props: { name: string }) {
           </p>
         ))}
       </div>
-    </div>
+    </Tilt>
   );
 }

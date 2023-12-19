@@ -25,3 +25,35 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.glassmorphic {
+  transform: translate3d(0, 0, 50px);
+  transform-style: preserve-3d;
+  background: rgba(255, 255, 255, 0.19);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(3.8px);
+  -webkit-backdrop-filter: blur(3.8px);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+}
+
+.ribbon {
+  --f: 10px; /* control the folded part*/
+  --r: 15px; /* control the ribbon shape */
+  --t: 10px; /* the top offset */
+
+  position: absolute;
+  inset: var(--t) calc(-1 * var(--f)) auto auto;
+  padding: 0 10px var(--f) calc(10px + var(--r));
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--f)),
+    calc(100% - var(--f)) 100%,
+    calc(100% - var(--f)) calc(100% - var(--f)),
+    0 calc(100% - var(--f)),
+    var(--r) calc(50% - var(--f) / 2)
+  );
+  background: rgba(252, 2, 2, 0.568);
+  box-shadow: 0 calc(-1 * var(--f)) 0 inset #0005;
+}

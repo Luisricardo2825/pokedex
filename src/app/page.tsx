@@ -1,7 +1,11 @@
-import getPokemons from "@/utils/getPokemons";
+"use client";
+import getPokemons, { PokemonList as ListType } from "@/utils/getPokemons";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import Link from "next/link";
 import { PokemonList } from "../components/PokemonList";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { Squares } from "@/components/Squares/Squares";
 
 const PER_PAGE = 24;
 const OFFSET = 0;
@@ -14,31 +18,38 @@ async function getData(offset?: number, limit?: number) {
   }
 }
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: {
-    offset: number | undefined;
-    limit: number | undefined;
-  };
-}) {
-  const { offset, limit } = searchParams;
+export default function Home() {
+  const searchParams = useSearchParams();
+  const offset: number = +(searchParams.get("offset") || 0);
+  const limit: number = +(searchParams.get("limit") || PER_PAGE);
+  const [page, setPage] = useState(offset / PER_PAGE + 1);
+  const router = useRouter();
 
-  const pokemons = await getData(offset, limit);
-  const page = Number(offset || 0) / PER_PAGE + 1;
-  const totalPages = Math.ceil(pokemons.count / PER_PAGE);
+  const [pokemons, setPokemons] = useState<ListType>();
+  const totalPages = useMemo(
+    () => Math.ceil((pokemons?.count || 0) / PER_PAGE),
+    [pokemons?.count]
+  );
+
+  useEffect(() => {
+    getData(offset, limit).then((res) => {
+      setPage(offset / PER_PAGE + 1);
+      return setPokemons(res);
+    });
+  }, [limit, offset]);
 
   return (
-    <main className="flex flex-col min-h-screen items-center gap-4 px-24 pt-14 backdrop-blur-lg bg-cyan-600 overflow-hidden max-h-screen">
-      <div className="flex  justify-around bg-[#2a2b2cd2] absolute top-0 left-0 w-[500px] rounded-ee-lg h-[70px]">
+    <main className="flex flex-col min-h-screen items-center gap-4 px-24 backdrop-blur-lg bg-cyan-600 overflow-hidden max-h-screen bg-[url('/bg.svg')]">
+      {/* <Squares quantity={30} /> */}
+      <div className="flex w-full rounded-ee-lg h-[70px]">
         <input
-          className="w-1/2 h-10 rounded-md bg-[#2a2b2c69] hover:bg-[#2a2b2cd2] transition-colors"
+          className="w-1/6 h-10 rounded-md bg-[#2a2b2c69] hover:bg-[#2a2b2cd2] transition-colors text-base text-center"
           type="text"
           placeholder="Search"
         />
       </div>
       <div className="flex flex-row-reverse w-full content-center z-[9999]">
-        <div className="flex justify-evenly w-1/12 content-center">
+        <div className="flex justify-evenly w-1/12 items-center">
           <Link
             href={{
               pathname: "/",
@@ -56,9 +67,26 @@ export default async function Home({
               <IconChevronLeft />
             </button>
           </Link>
-          {page}
-          <span>of</span>
-          {totalPages}
+          <div className="flex flex-row justify-between gap-2 ">
+            <input
+              name="page"
+              // min={1}
+              value={page}
+              onChange={(e) => setPage(+e.currentTarget.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  const offset = page * PER_PAGE - PER_PAGE;
+
+                  router.push(`/?offset=${offset}&limit=${PER_PAGE}`);
+                }
+              }}
+              // max={totalPages}
+              className="w-6 h-6 bg-cyan-600 hover:bg-cyan-800 outline-none focus:bg-cyan-800 rounded-lg text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none "
+            />
+            <div>of</div>
+            <div>{totalPages}</div>
+          </div>
           <Link
             href={{
               pathname: "/",
@@ -78,7 +106,7 @@ export default async function Home({
           </Link>
         </div>
       </div>
-      <PokemonList results={pokemons.results}></PokemonList>
+      {pokemons?.results && <PokemonList results={pokemons.results} />}
     </main>
   );
 }
