@@ -9,18 +9,6 @@ import { useAtom } from "jotai";
 import { pokemonsAtom } from "@/constants/atom";
 import PokeBallIcon from "./PokeBallIcon";
 import Tilt from "react-parallax-tilt";
-import { TiltOptions } from "vanilla-tilt";
-
-const options: TiltOptions = {
-  scale: 1.1,
-  speed: 1000,
-  max: 10,
-  reset: true,
-  glare: true, // if it should have a "glare" effect
-  "max-glare": 0.5, // the maximum "glare" opacity (1 = 100%, 0.5 = 50%)
-  "glare-prerender": false, // false = VanillaTilt creates the glare elements for you, otherwise
-  transition: true,
-};
 
 export default function Card(props: { name: string }) {
   const [pokemons, setPokemons] = useAtom(pokemonsAtom);
