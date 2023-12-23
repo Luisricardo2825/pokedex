@@ -5,7 +5,7 @@ import Link from "next/link";
 import { PokemonList } from "../components/PokemonList";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { Squares } from "@/components/Squares/Squares";
+// import { Squares } from "@/components/Squares/Squares";
 
 const PER_PAGE = 24;
 const OFFSET = 0;
@@ -39,7 +39,7 @@ export default function Home() {
   }, [limit, offset]);
 
   return (
-    <main className="flex flex-col min-h-screen items-center gap-4 px-24 backdrop-blur-lg bg-cyan-600 overflow-hidden max-h-screen bg-[url('/bg.svg')]">
+    <main className="flex flex-col items-center gap-4 px-24 backdrop-blur-lg min-h-screen overflow-hidden">
       {/* <Squares quantity={30} /> */}
       <div className="flex w-full rounded-ee-lg h-[70px]">
         <input

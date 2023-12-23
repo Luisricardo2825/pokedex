@@ -9,6 +9,7 @@ import { useAtom } from "jotai";
 import { pokemonsAtom } from "@/constants/atom";
 import PokeBallIcon from "./PokeBallIcon";
 import Tilt from "react-parallax-tilt";
+import Link from "next/link";
 
 export default function Card(props: { name: string }) {
   const [pokemons, setPokemons] = useAtom(pokemonsAtom);
@@ -37,7 +38,7 @@ export default function Card(props: { name: string }) {
   }, [pokemons, props.name, setPokemons]);
   if (!pokemon)
     return (
-      <div className="flex flex-col items-center justify-center h-[250px] w-[200px] bg-[#24242454] rounded hover:scale-110 transition-transform">
+      <div className="flex flex-col items-center justify-center h-[200px] w-[200px] bg-[#24242454] rounded hover:scale-110 transition-transform">
         <div role="status">
           <svg
             aria-hidden="true"
@@ -74,47 +75,48 @@ export default function Card(props: { name: string }) {
       glarePosition="all"
       glareBorderRadius="20px"
     >
-      <div
-        className={`ribbon relative w-fit rounded-e-lg top-2 pl-1 pr-2 bg-gradient-to-r from-[#df585880] to-[#f51111ad] text-[#ffffffc7]`}
-      >
-        #{pokemon.id}
-      </div>
-
-      <div className="flex justify-center p-1">
-        <Image
-          src={
-            pokemon?.sprites?.other["official-artwork"]?.front_default ||
-            pokemon?.sprites?.front_default ||
-            ""
-          }
-          alt={pokemon?.name || "unknow pokemon"}
-          width={100}
-          height={100}
-          className="z-10 inner-element"
-          priority
-        />
-        <PokeBallIcon />
-      </div>
-
-      <p className="text-white text-center">
-        {captalize(pokemon?.name || "Unknow")}
-      </p>
-
-      <p className="text-white">{pokemon.height}</p>
-      <p className="text-white">{pokemon.weight}</p>
-      <div className="flex justify-around">
-        {pokemon?.types?.map((type) => (
-          <p
-            className={`text-white text-center rounded-lg max-w-min px-5`}
-            style={{
-              background: resolveType(type.type.name.toLowerCase().trim()),
-            }}
-            key={type.type.name}
+      <Link passHref href={`/pokemon/${pokemon.name}`}>
+        <div>
+          <div
+            className={`ribbon relative w-fit rounded-e-lg top-2 pl-1 pr-2 bg-gradient-to-r from-[#df585880] to-[#f51111ad] text-[#ffffffc7]`}
           >
-            {captalize(type.type.name)}
+            #{pokemon.id}
+          </div>
+
+          <div className="flex justify-center p-1">
+            <Image
+              src={
+                pokemon?.sprites?.other["official-artwork"]?.front_default ||
+                pokemon?.sprites?.front_default ||
+                ""
+              }
+              alt={pokemon?.name || "unknow pokemon"}
+              width={100}
+              height={100}
+              className="z-10 inner-element"
+              priority
+            />
+            <PokeBallIcon />
+          </div>
+
+          <p className="text-white text-center">
+            {captalize(pokemon?.name || "Unknow")}
           </p>
-        ))}
-      </div>
+          <div className="flex justify-around">
+            {pokemon?.types?.map((type) => (
+              <p
+                className={`text-white text-center rounded-lg max-w-min px-5`}
+                style={{
+                  background: resolveType(type.type.name.toLowerCase().trim()),
+                }}
+                key={type.type.name}
+              >
+                {captalize(type.type.name)}
+              </p>
+            ))}
+          </div>
+        </div>
+      </Link>
     </Tilt>
   );
 }

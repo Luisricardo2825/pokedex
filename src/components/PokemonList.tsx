@@ -11,8 +11,8 @@ const item = {
 };
 export function PokemonList(props: { results: PokemonList["results"] }) {
   return (
-    <div className="grid lg:grid-cols-8 md:grid-cols-6 gap-8 max-h-screen">
-      <AnimatePresence mode="popLayout">
+    <div className="grid lg:grid-cols-8 md:grid-cols-6 gap-8">
+      <AnimatePresence mode="wait">
         {props.results.map((pokemon, index) => (
           <motion.div
             variants={item}
@@ -21,7 +21,7 @@ export function PokemonList(props: { results: PokemonList["results"] }) {
             animate="enter"
             exit="exit"
             transition={{
-              duration: 0.5,
+              duration: 0.2,
               delay: 0.05 * index,
               type: "just",
             }}
