@@ -26,6 +26,12 @@ body {
   backdrop-filter: blur(3.8px);
 }
 
+.mobileCard {
+  transform: translate3d(0, 0, 50px);
+  transform-style: preserve-3d;
+  backdrop-filter: blur(3.8px);
+}
+
 .ribbon {
   --f: 10px; /* control the folded part*/
   --r: 15px; /* control the ribbon shape */

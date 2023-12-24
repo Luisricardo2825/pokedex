@@ -1,112 +1,99 @@
-"use client";
-import getPokemons, { PokemonList as ListType } from "@/utils/getPokemons";
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-import Link from "next/link";
-import { PokemonList } from "../components/PokemonList";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-// import { Squares } from "@/components/Squares/Squares";
+import { Paginator } from "@/components/Paginator";
+import { PokemonList } from "@/components/PokemonList";
+import getPokemons, {
+  PokemonList as ListType,
+  Result,
+} from "@/utils/getPokemons";
+import { buildQuery } from "@/utils/query";
+import { redirect } from "next/navigation";
 
 const PER_PAGE = 24;
-const OFFSET = 0;
-async function getData(offset?: number, limit?: number) {
+
+async function getCount() {
+  const count = (await getPokemons(0, 1)).count;
+  return count;
+}
+async function getData(offset?: number, limit?: number, search?: string) {
   try {
-    const res = await getPokemons(offset || OFFSET, limit || PER_PAGE);
+    const limit = await getCount();
+    const res = await getPokemons(0, limit, search);
     return res;
   } catch (error) {
-    throw new Error("Failed to fetch data");
+    throw new Error("Failed to fetch data" + error);
   }
 }
 
-export default function Home() {
-  const searchParams = useSearchParams();
-  const offset: number = +(searchParams.get("offset") || 0);
-  const limit: number = +(searchParams.get("limit") || PER_PAGE);
-  const [page, setPage] = useState(offset / PER_PAGE + 1);
-  const router = useRouter();
-
-  const [pokemons, setPokemons] = useState<ListType>();
-  const totalPages = useMemo(
-    () => Math.ceil((pokemons?.count || 0) / PER_PAGE),
-    [pokemons?.count]
+function searchPokemons(pokemons: ListType | undefined, search?: string) {
+  const list = pokemons?.results.filter((pokemon) =>
+    search ? pokemon.name.includes(search) : true
   );
+  const total = Math.ceil((list?.length || 0) / PER_PAGE) || 0;
+  return { list, total };
+}
 
-  useEffect(() => {
-    getData(offset, limit).then((res) => {
-      setPage(offset / PER_PAGE + 1);
-      return setPokemons(res);
+function defaultList(pokemons: ListType | undefined, search?: string) {
+  const list = pokemons?.results;
+  const total = Math.ceil((pokemons?.count || 0) / PER_PAGE);
+
+  return { list, total };
+}
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams?: {
+    offset?: string;
+    limit?: string;
+    search?: string;
+  };
+}) {
+  const offset: number = +(searchParams?.offset || 0);
+  const limit: number = +(searchParams?.limit || PER_PAGE);
+  let search: string | undefined = searchParams?.search;
+
+  let pokemons: ListType | undefined = await getData(offset, limit);
+
+  const items = search
+    ? searchPokemons(pokemons, search)
+    : defaultList(pokemons);
+
+  const { list, total } = items;
+
+  async function handleSearch(formData: FormData) {
+    "use server";
+    const search = formData.get("search") as string;
+    const query = buildQuery({
+      offset: 0,
+      limit,
+      search,
     });
-  }, [limit, offset]);
-
+    redirect(`/?${query}`);
+  }
   return (
-    <main className="flex flex-col items-center gap-4 px-24 backdrop-blur-lg min-h-screen overflow-hidden">
+    <main className="flex flex-col items-center backdrop-blur-lg min-h-screen overflow-hidden">
       {/* <Squares quantity={30} /> */}
-      <div className="flex w-full rounded-ee-lg h-[70px]">
+      <form
+        action={handleSearch}
+        className="flex flex-row items-center justify-center w-full rounded-ee-lg h-[70px]"
+      >
         <input
-          className="w-1/6 h-10 rounded-md bg-[#2a2b2c69] hover:bg-[#2a2b2cd2] transition-colors text-base text-center"
+          name="search"
+          className="w-1/2 h-10 rounded-md bg-[#2a2b2c69] hover:bg-[#2a2b2cd2] transition-colors text-base text-center"
           type="text"
           placeholder="Search"
         />
-      </div>
-      <div className="flex flex-row-reverse w-full content-center z-[9999]">
-        <div className="flex justify-evenly w-1/12 items-center">
-          <Link
-            href={{
-              pathname: "/",
-              query: {
-                offset: offset && +offset > 0 ? +offset - PER_PAGE : 0,
-                limit: limit || PER_PAGE,
-              },
-            }}
-            passHref
-          >
-            <button
-              className="bg-[#00000065] rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors hover:bg-[#000000a6]"
-              disabled={offset ? +offset == 0 : true}
-            >
-              <IconChevronLeft />
-            </button>
-          </Link>
-          <div className="flex flex-row justify-between gap-2 ">
-            <input
-              name="page"
-              // min={1}
-              value={page}
-              onChange={(e) => setPage(+e.currentTarget.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  const offset = page * PER_PAGE - PER_PAGE;
-
-                  router.push(`/?offset=${offset}&limit=${PER_PAGE}`);
-                }
-              }}
-              // max={totalPages}
-              className="w-6 h-6 bg-cyan-600 hover:bg-cyan-800 outline-none focus:bg-cyan-800 rounded-lg text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none "
-            />
-            <div>of</div>
-            <div>{totalPages}</div>
-          </div>
-          <Link
-            href={{
-              pathname: "/",
-              query: {
-                offset: offset ? +offset + PER_PAGE : PER_PAGE,
-                limit: limit || PER_PAGE,
-              },
-            }}
-            passHref
-          >
-            <button
-              className="bg-[#00000065] rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors hover:bg-[#000000a6]"
-              disabled={totalPages == page}
-            >
-              <IconChevronRight />
-            </button>
-          </Link>
-        </div>
-      </div>
-      {pokemons?.results && <PokemonList results={pokemons.results} />}
+      </form>
+      <Paginator
+        offset={offset}
+        limit={limit}
+        totalPages={total}
+        search={search}
+      />
+      {list && Array.isArray(list) ? (
+        <PokemonList results={list.slice(offset, offset + PER_PAGE)} />
+      ) : (
+        <PokemonList results={[list as unknown as Result]} />
+      )}
     </main>
   );
 }

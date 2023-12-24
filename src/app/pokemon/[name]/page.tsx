@@ -128,6 +128,7 @@ function PokemonDetails(props: { pokemon: Pokemon; species: PokemonSpecies }) {
 export default async function Page({ params }: { params: { name: string } }) {
   const pokemon = await getPokemon(params.name);
   const species = await getSpecies(params.name);
+
   return (
     <div className="flex flex-row items-center justify-center h-screen p-20 ">
       <div className="flex flex-row justify-between bg-white rounded-lg h-[70vh] w-[60%]">

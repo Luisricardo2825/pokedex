@@ -11,7 +11,7 @@ const item = {
 };
 export function PokemonList(props: { results: PokemonList["results"] }) {
   return (
-    <div className="grid lg:grid-cols-8 md:grid-cols-6 gap-8">
+    <div className="grid md:grid-cols-5 lg:grid-cols-6 2xl:grid-cols-8 md:gap-x-5 lg:gap-x-5 xl:gap-x-5 2xl:gap-x-5 gap-y-5">
       <AnimatePresence mode="wait">
         {props.results.map((pokemon, index) => (
           <motion.div

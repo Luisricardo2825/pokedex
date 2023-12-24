@@ -1,6 +1,12 @@
-export default function getPokemons(offset: number, limit: number) {
+export default function getPokemons(
+  offset: number,
+  limit: number,
+  pokemon?: string
+) {
   return fetch(
-    `https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${limit}`
+    `https://pokeapi.co/api/v2/pokemon-species/${
+      pokemon ? pokemon : ""
+    }?offset=${offset}&limit=${limit}`
   )
     .then((res) => res.json())
     .then((data) => {

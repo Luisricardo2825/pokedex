@@ -17,7 +17,6 @@ export default function Card(props: { name: string }) {
   React.useEffect(() => {
     const pokemon = pokemons.get(props.name);
     if (pokemon) {
-      console.log("found");
       setPokemon(pokemon);
       return;
     }
@@ -38,7 +37,7 @@ export default function Card(props: { name: string }) {
   }, [pokemons, props.name, setPokemons]);
   if (!pokemon)
     return (
-      <div className="flex flex-col items-center justify-center h-[200px] w-[200px] bg-[#24242454] rounded hover:scale-110 transition-transform">
+      <div className="flex flex-col items-center justify-center h-20 md:h-[200px] md:w-[200px] bg-[#24242454] rounded hover:scale-110 transition-transform">
         <div role="status">
           <svg
             aria-hidden="true"
@@ -62,7 +61,7 @@ export default function Card(props: { name: string }) {
     );
   return (
     <Tilt
-      className="card glassmorphic transition-transform p-5 parallax-effect-img hover:z-50"
+      className="card w-[80vw] md:h-52 md:max-h-52 sm:w-32 xl:w-44 glassmorphic transition-transform p-5 parallax-effect-img hover:z-50"
       tiltMaxAngleX={40}
       tiltMaxAngleY={40}
       perspective={800}
@@ -76,14 +75,14 @@ export default function Card(props: { name: string }) {
       glareBorderRadius="20px"
     >
       <Link passHref href={`/pokemon/${pokemon.name}`}>
-        <div>
+        <div className="flex flex-row h-20 md:h-auto md:flex md:flex-col justify-between items-center">
           <div
             className={`ribbon relative w-fit rounded-e-lg top-2 pl-1 pr-2 bg-gradient-to-r from-[#df585880] to-[#f51111ad] text-[#ffffffc7]`}
           >
             #{pokemon.id}
           </div>
-
-          <div className="flex justify-center p-1">
+          <PokeBallIcon className="absolute -left-[5px] -top-[5px] md:top-[50%] md:left-[50%] md:transform md:-translate-x-1/2 md:-translate-y-[70%]" />
+          <div className="flex flex-col justify-center p-1">
             <Image
               src={
                 pokemon?.sprites?.other["official-artwork"]?.front_default ||
@@ -91,28 +90,27 @@ export default function Card(props: { name: string }) {
                 ""
               }
               alt={pokemon?.name || "unknow pokemon"}
-              width={100}
-              height={100}
-              className="z-10 inner-element"
+              height={90}
+              width={90}
+              className="z-10 h-[90px]"
               priority
             />
-            <PokeBallIcon />
+            <p className="text-white text-center">
+              {captalize(pokemon?.name || "Unknow").replaceAll("-", " ")}
+            </p>
           </div>
 
-          <p className="text-white text-center">
-            {captalize(pokemon?.name || "Unknow")}
-          </p>
-          <div className="flex justify-around">
+          <div className="flex flex-col gap-1 bg-red">
             {pokemon?.types?.map((type) => (
-              <p
-                className={`text-white text-center rounded-lg max-w-min px-5`}
+              <div
+                className={`text-white text-center rounded-lg px-3 py-[2px]`}
                 style={{
                   background: resolveType(type.type.name.toLowerCase().trim()),
                 }}
                 key={type.type.name}
               >
                 {captalize(type.type.name)}
-              </p>
+              </div>
             ))}
           </div>
         </div>
