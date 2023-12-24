@@ -27,7 +27,7 @@ let parentVariant = {
 };
 export function PokemonList(props: { results: PokemonList["results"] }) {
   return (
-    <div className="grid md:grid-cols-5 lg:grid-cols-6 2xl:grid-cols-8 md:gap-x-5 lg:gap-x-5 xl:gap-x-5 2xl:gap-x-5 gap-y-5">
+    <div className="grid md:grid-cols-5 lg:grid-cols-6 2xl:grid-cols-8 md:gap-x-5 lg:gap-x-5 xl:gap-x-5 2xl:gap-x-5 gap-y-5 mb-10">
       <AnimatePresence mode="popLayout">
         {props.results.map((pokemon, index) => (
           <motion.div
