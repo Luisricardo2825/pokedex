@@ -59,7 +59,6 @@ export default function Card(props: { name: string }) {
       glareColor="#ffffff"
       glarePosition="all"
       glareBorderRadius="20px"
-      gyroscope
     >
       <Link passHref href={`/pokemon/${pokemon.name}`}>
         <div className="flex flex-row h-20 md:h-auto md:flex md:flex-col justify-between items-center">
