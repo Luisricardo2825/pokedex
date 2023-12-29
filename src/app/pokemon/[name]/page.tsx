@@ -1,7 +1,6 @@
 import { Pokemon } from "@/@types/pokemon";
 import { PokemonSpecies } from "@/@types/pokemonSpecies";
 import RadarComponent, { PokemonData } from "@/components/Chart/Radar";
-import PokeBallIcon from "@/components/PokeBallIcon";
 import resolveType from "@/constants/types";
 import captalize from "@/utils/captalize";
 import getPokemon from "@/utils/getPokemon";
@@ -16,7 +15,7 @@ function PokemonImage(props: { pokemon: Pokemon; species: PokemonSpecies }) {
   const size = 300;
   return (
     <div className="flex flex-col items-center justify-center h-1/2 lg:h-full lg:w-[50%]">
-      <div className="card w-full shadow-inner  bg-gradient-to-r from-[#f3f3f3] to-[#adababad]">
+      <div className="card w-full shadow-inner  bg-gradient-to-r from-[#f3f3f3] to-[#adababad] mt-5">
         <p className="text-gray-600 text-center text-2xl">
           {captalize(props.pokemon?.name || "Unknow")}
         </p>
@@ -39,7 +38,7 @@ function PokemonImage(props: { pokemon: Pokemon; species: PokemonSpecies }) {
         priority
       />
 
-      <div className="flex justify-around">
+      <div className="flex justify-around gap-1">
         {props.pokemon?.types?.map((type) => (
           <p
             className={`text-black text-center rounded-lg max-w-min px-5`}
@@ -53,9 +52,9 @@ function PokemonImage(props: { pokemon: Pokemon; species: PokemonSpecies }) {
         ))}
       </div>
 
-      <div className="hidden lg:flex flex-col  justify-center content-center w-full pt-5">
-        <p className="text-black text-center font-bold">Stats</p>
-        <div className="flex flex-row justify-center h-52 w-full">
+      <div className="hidden lg:flex flex-col  justify-center content-center w-full pb-10">
+        <p className="text-black text-center font-bold pb-2">Stats</p>
+        <div className="flex flex-row justify-center h-52 w-full overflow-hidden lg:h-30">
           <RadarComponent
             data={{
               name: props.pokemon.name,
@@ -64,6 +63,8 @@ function PokemonImage(props: { pokemon: Pokemon; species: PokemonSpecies }) {
                 props.pokemon.types[0].type.name.toLowerCase().trim()
               ),
             }}
+            width="100%"
+            height="80%"
           />
         </div>
       </div>
@@ -150,13 +151,13 @@ export default async function Page({ params }: { params: { name: string } }) {
 
     return (
     <div
-      className="flex flex-row items-center justify-center h-screen lg:p-20"
+      className="flex flex-row items-center justify-center h-screen max-h-screen lg:p-20"
       style={{
         background: `linear-gradient(0deg,${color2} 0%, ${color} 100%)`,
       }}
     >
       <div
-        className="flex flex-col items-center lg:flex-row justify-betweerounded-lg h-[90%] w-[95%] lg:h-[70vh] lg:w-[60%] shadow-2xl"
+        className="flex flex-col items-center lg:flex-row justify-between rounded-lg h-[90%] w-[95%] lg:h-[70vh] lg:w-[60%] shadow-2xl"
         style={{
           background: `linear-gradient(45deg, rgba(255,255,255,1) 50%, ${color} 50%)`,
         }}

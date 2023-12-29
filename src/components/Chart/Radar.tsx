@@ -20,9 +20,17 @@ export interface Stat {
   stat: string;
   A: number;
 }
-export default function RadarComponent({ data }: { data: PokemonData }) {
+export default function RadarComponent({
+  data,
+  width,
+  height,
+}: {
+  data: PokemonData;
+  width?: string;
+  height?: string;
+}) {
   return (
-    <ResponsiveContainer width="100%" height="100%" className={"text-white"}>
+    <ResponsiveContainer width={width} height={height} className={"text-white"}>
       <RadarChart
         cx="50%"
         cy="50%"
