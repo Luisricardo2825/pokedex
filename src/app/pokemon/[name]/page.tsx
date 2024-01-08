@@ -26,6 +26,7 @@ function PokemonImage(props: { pokemon: Pokemon; species: PokemonSpecies }) {
         </div>
       </div>
       <Image
+        unoptimized
         src={
           props.pokemon?.sprites?.other["official-artwork"]?.front_default ||
           props.pokemon?.sprites?.front_default ||
@@ -149,7 +150,7 @@ export default async function Page({ params }: { params: { name: string } }) {
     ? hexToCssHsl(resolveType(pokemon.types[1].type.name.toLowerCase().trim()))
     : hexToCssHsl(color);
 
-    return (
+  return (
     <div
       className="flex flex-row items-center justify-center h-screen max-h-screen lg:p-20"
       style={{

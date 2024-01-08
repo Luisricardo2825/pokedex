@@ -70,6 +70,7 @@ export default function Card(props: { name: string }) {
           <PokeBallIcon className="absolute -left-[5px] -top-[5px] md:top-[50%] md:left-[50%] md:transform md:-translate-x-1/2 md:-translate-y-[70%]" />
           <div className="flex flex-col justify-center p-1">
             <Image
+              unoptimized
               src={
                 pokemon?.sprites?.other["official-artwork"]?.front_default ||
                 pokemon?.sprites?.front_default ||
